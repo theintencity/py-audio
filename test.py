@@ -18,10 +18,10 @@ def inout(fragment, timestamp, userdata):
     global queue, enc, dec, upsample, downsample
     try:
         #print [sys.getrefcount(x) for x in (None, upsample, downsample, enc, dec)]
-        fragment1, downsample = audiospeex.resample(fragment, input_rate=44100, output_rate=8000, state=downsample)
+        fragment1, downsample = audiospeex.resample(fragment, input_rate=48000, output_rate=8000, state=downsample)
         fragment2, enc = audiospeex.lin2speex(fragment1, sample_rate=8000, state=enc)
         fragment3, dec = audiospeex.speex2lin(fragment2, sample_rate=8000, state=dec)
-        fragment4, upsample = audiospeex.resample(fragment3, input_rate=8000, output_rate=44100, state=upsample)
+        fragment4, upsample = audiospeex.resample(fragment3, input_rate=8000, output_rate=48000, state=upsample)
         fragment5 = fragment4 + fragment4 # create stereo
         # print len(fragment), len(fragment1), len(fragment2), len(fragment3), len(fragment4), len(fragment5)
         queue.append(fragment5)
@@ -36,7 +36,7 @@ def inout(fragment, timestamp, userdata):
         return ""
 
 audiodev.open(output="default", input="default",
-            format="l16", sample_rate=44100, frame_duration=20,
+            format="l16", sample_rate=48000, frame_duration=20,
             output_channels=2, input_channels=1, flags=0x01, callback=inout)
 
 try:
